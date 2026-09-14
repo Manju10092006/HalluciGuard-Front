@@ -25,7 +25,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-padding-top: 100px; }
-body { margin: 0; min-width: 320px; background: var(--paper); }
+body { margin: 0; min-width: 320px; overflow-x: hidden; background: var(--paper); }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; }
@@ -215,7 +215,7 @@ h2 em {
 .state.supported { color: #22644f; background: #dceee5; }
 .state.checking { color: #7c4e25; background: #f7e6c8; }
 .evidence-thread { display: grid; grid-template-columns: 16px 1fr; gap: 10px; padding: 22px 4px 7px; }
-.thread-line { display: flex; justify-content: center; }
+.thread-line { position: relative; display: flex; justify-content: center; }
 .thread-line::before { content: ''; width: 1px; height: 67px; background: #b9cec5; }
 .thread-line i { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--coral); animation: evidenceDrop 2.4s ease-in-out infinite; }
 @keyframes evidenceDrop { from { transform: translateY(0); } 50% { transform: translateY(60px); } to { transform: translateY(0); } }
@@ -573,4 +573,29 @@ footer { position: relative; min-height: 620px; padding: 100px 0 30px; overflow:
   [data-reveal] { opacity: 1; transform: none; }
   .format-track, .cap-track { animation: none; }
   .format-window, .cap-row { overflow-x: auto; scrollbar-width: thin; }
+}
+
+/* Interaction polish: motion always communicates inspectability. */
+.format-card,
+.capability-pill {
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+}
+.format-card:hover,
+.format-card:focus-visible {
+  transform: translateY(-7px);
+  border-color: rgba(255,255,255,.95);
+  box-shadow: 0 18px 44px rgba(65,42,70,.18);
+}
+.capability-pill:hover {
+  transform: translateY(-3px);
+  border-color: rgba(17,21,20,.12);
+  box-shadow: 0 12px 28px rgba(17,21,20,.07);
+}
+.format-window:focus-within .format-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .format-card:hover,
+  .format-card:focus-visible,
+  .capability-pill:hover { transform: none; }
 }
