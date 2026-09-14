@@ -528,18 +528,21 @@ h2 em {
 }
 
 .video-box {
-  margin-top: auto;
-  padding-top: 12px;
+  flex: 1;
   width: 100%;
+  min-height: 240px;
+  margin-top: 12px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  overflow: hidden;
 }
 
 .contact-video-media {
-  width: 130px;
-  height: auto;
-  max-height: 170px;
+  width: 100%;
+  max-width: 240px;
+  height: 100%;
+  max-height: 280px;
   display: block;
   object-fit: contain;
 }
