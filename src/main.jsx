@@ -412,40 +412,16 @@ function RelationshipLab() {
   )
 }
 
-function PhonePersonIllustration() {
-  return (
-    <svg viewBox="0 0 160 210" width="130" height="170" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="person-svg">
-      <path d="M 65 52 C 60 38, 75 32, 88 38 C 96 36, 102 44, 98 54 C 92 50, 78 48, 65 52 Z" fill="#111" />
-      <path d="M 70 54 C 66 66, 76 78, 90 75 C 94 71, 95 61, 95 55" fill="#fff" />
-      <path d="M 85 62 L 87 64" />
-      <rect x="92" y="52" width="9" height="20" rx="4.5" fill="#111" />
-      <path d="M 80 88 C 95 86, 100 72, 96 66" />
-      <path d="M 62 88 L 94 88 L 92 142 L 64 142 Z" fill="#fff" />
-      <path d="M 78 88 L 78 142" />
-      <path d="M 70 88 L 78 96 L 86 88" />
-      <path d="M 62 88 C 52 102, 54 124, 64 130" />
-      <path d="M 64 142 L 64 194 M 92 142 L 92 194" strokeWidth="3" stroke="#111" fill="#111" />
-      <path d="M 78 142 L 78 194" strokeWidth="1.5" />
-      <path d="M 56 194 L 70 194 M 86 194 L 100 194" strokeWidth="3.5" stroke="#111" />
-    </svg>
-  )
-}
-
 function FAQ() {
   const [open, setOpen] = useState(0)
-  const videoSrc = `${import.meta.env.BASE_URL}contact-support.mp4`
-
   return (
     <section className="faq-section" id="questions">
       <div className="section-shell faq-grid">
         <div className="faq-aside" data-reveal>
-          <h2>Help and <span className="highlight-support">support</span></h2>
-          <p>Clear answers about what HalluciGuard verifies, how evidence is judged, and why the trail matters.</p>
-          <div className="faq-media-card">
-            <video src={videoSrc} autoPlay loop muted playsInline className="faq-video" />
-          </div>
-          <p className="still-questions-text">Still have questions?</p>
-          <a className="button dark contact-btn" href="#contact">Contact us <ArrowRight size={15} /></a>
+          <span className="section-index">07 / HELP & SUPPORT</span>
+          <h2>Questions should<br /><em>open the evidence.</em></h2>
+          <p>Clear answers about what the system does, what it does not do, and why the trail matters.</p>
+          <a className="button dark" href="#contact">Ask another question <ArrowRight size={16} /></a>
         </div>
         <div className="faq-list" data-reveal>
           {faqs.map((item, index) => (
@@ -468,53 +444,61 @@ function Contact() {
     event.preventDefault()
     setSent(true)
   }
+  const videoSrc = `${import.meta.env.BASE_URL}contact-support.mp4`
+
   return (
     <section className="contact-section" id="contact">
       <div className="section-shell">
         <div className="contact-header" data-reveal>
-          <h2>Get in <span className="highlight-touch">touch</span></h2>
+          <h2>Get in <span className="touch-underline">touch</span></h2>
           <p>Reach out to our team at any time for support or questions and we'll get back to you within 2 business days.</p>
         </div>
-        <div className="contact-grid">
-          <aside className="contact-aside-v2" data-reveal>
-            <div className="contact-info-card">
-              <Phone size={18} />
+        <div className="contact-body">
+          <aside className="contact-card-left" data-reveal>
+            <div className="info-box">
+              <Phone size={18} color="#444" />
               <span>412-483-8261</span>
             </div>
-            <div className="contact-info-card">
-              <Mail size={18} />
+            <div className="info-box">
+              <Mail size={18} color="#444" />
               <span>support@zovasaas.com</span>
             </div>
-            <div className="contact-info-card">
-              <Building2 size={18} />
+            <div className="info-box">
+              <Building2 size={18} color="#444" />
               <span>210 Market St. Suite 402<br />San Francisco, CA</span>
             </div>
-            <div className="contact-illustration-wrap">
-              <PhonePersonIllustration />
+            <div className="video-box">
+              <video src={videoSrc} autoPlay loop muted playsInline className="contact-video-media" />
             </div>
           </aside>
-          <form className="contact-form-v2" onSubmit={submit} data-reveal>
+          <form className="contact-card-right" onSubmit={submit} data-reveal>
             <h3>How can we help you today?</h3>
-            <label>Name
-              <input name="name" required placeholder="Jane Smith" />
-            </label>
-            <label>Email
-              <input name="email" type="email" required placeholder="jane@framer.com" />
-            </label>
-            <label>Topic
-              <select name="topic" defaultValue="">
+            <div className="form-field">
+              <label htmlFor="input-name">Name</label>
+              <input id="input-name" name="name" required placeholder="Jane Smith" />
+            </div>
+            <div className="form-field">
+              <label htmlFor="input-email">Email</label>
+              <input id="input-email" name="email" type="email" required placeholder="jane@framer.com" />
+            </div>
+            <div className="form-field">
+              <label htmlFor="input-topic">Topic</label>
+              <select id="input-topic" name="topic" defaultValue="">
                 <option value="" disabled>Select...</option>
                 <option>Product demonstration</option>
                 <option>Research workflow</option>
                 <option>Enterprise verification</option>
                 <option>Technical integration</option>
               </select>
-            </label>
-            <label>Message
-              <textarea name="message" required placeholder="Enter your message" rows="4" />
-            </label>
-            <button className="submit-btn" type="submit">{sent ? 'Submitted' : 'Submit'}</button>
-            {sent && <p className="form-note-v2" aria-live="polite">Thank you! We will get back to you within 2 business days.</p>}
+            </div>
+            <div className="form-field">
+              <label htmlFor="input-message">Message</label>
+              <textarea id="input-message" name="message" required placeholder="Enter your message" rows={4} />
+            </div>
+            <button className="contact-submit-button" type="submit">
+              {sent ? 'Submitted' : 'Submit'}
+            </button>
+            {sent && <p className="sent-confirmation">Thank you! We will get back to you within 2 business days.</p>}
           </form>
         </div>
       </div>
