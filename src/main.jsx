@@ -464,9 +464,14 @@ function Contact() {
           <aside className="contact-aside" data-reveal>
             <div className="contact-channel"><Mail size={18} /><span><small>PROJECT ENQUIRIES</small><b>Choose a team inbox before launch</b></span></div>
             <div className="contact-channel"><ShieldCheck size={18} /><span><small>INVESTIGATION PRINCIPLE</small><b>Every verdict keeps its evidence trail</b></span></div>
-            <div className="contact-signal">
-              <Sparkles size={25} />
-              <p>A good investigation begins by making uncertainty visible.</p>
+            <div className="contact-video" aria-label="Animated contact illustration">
+              <video autoPlay loop muted playsInline preload="metadata">
+                <source src={`${import.meta.env.BASE_URL}contact-support.mp4`} type="video/mp4" />
+              </video>
+              <div className="contact-video-fallback" aria-hidden="true">
+                <Sparkles size={25} />
+                <p>A good investigation begins by making uncertainty visible.</p>
+              </div>
             </div>
           </aside>
           <form className="contact-form" onSubmit={submit} data-reveal>
