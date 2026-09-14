@@ -417,13 +417,19 @@ function FAQ() {
       <div className="section-shell faq-grid">
         <div className="faq-aside" data-reveal>
           <span className="section-index">07 / HELP & SUPPORT</span>
-          <h2>Questions should<br /><em>open the evidence.</em></h2>
-          <p>Clear answers about what the system does, what it does not do, and why the trail matters.</p>
-          <div className="question-orbit" aria-hidden="true">
-            <CircleHelp size={42} />
-            <span>?</span><span>?</span><span>?</span>
+          <h2>Help and <em>support</em></h2>
+          <p>Clear answers about what HalluciGuard verifies, how evidence is judged, and why the trail matters.</p>
+          <div className="support-video" aria-label="Animated help and support illustration">
+            <video autoPlay loop muted playsInline preload="metadata">
+              <source src={`${import.meta.env.BASE_URL}help-support.mp4`} type="video/mp4" />
+            </video>
+            <div className="support-video-fallback" aria-hidden="true">
+              <CircleHelp size={46} />
+              <span>?</span><span>?</span><span>?</span>
+            </div>
           </div>
-          <a className="button dark" href="#contact">Ask another question <ArrowRight size={16} /></a>
+          <span className="still-question">Still have questions?</span>
+          <a className="button dark" href="#contact">Contact us <ArrowRight size={16} /></a>
         </div>
         <div className="faq-list" data-reveal>
           {faqs.map((item, index) => (
