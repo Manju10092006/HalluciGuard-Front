@@ -62,28 +62,28 @@ const agents = [
 
 const faqs = [
   {
-    q: 'What does HalluciGuard verify?',
-    a: 'It evaluates individual factual claims inside an AI answer. Each claim is separated, matched to evidence, characterized, and judged independently.',
+    q: 'How do I connect my financial data sources?',
+    a: 'Connecting your data sources is straightforward. You can use our secure API integrations or pre-built connectors for major financial platforms to import your data in minutes.',
   },
   {
-    q: 'Does a citation automatically mean a claim is supported?',
-    a: 'No. A citation is only a link. HalluciGuard checks whether the cited passage actually supports, contradicts, or merely discusses the claim.',
+    q: 'Can I change or cancel my plan at any time?',
+    a: 'Yes, you can upgrade, downgrade, or cancel your subscription at any time directly from your account dashboard with no hidden fees or lock-in periods.',
   },
   {
-    q: 'What happens when sources disagree?',
-    a: 'Disagreement is preserved as evidence, not averaged away. The Judge receives the source quality, exact relationship, and unresolved uncertainty.',
+    q: 'How secure is my data?',
+    a: 'We utilize bank-grade 256-bit encryption for all data in transit and at rest. Your information is isolated and processed strictly within compliant, certified infrastructure.',
   },
   {
-    q: 'Why are there five agents?',
-    a: 'Separating detection, retrieval, characterization, judgment, and correction keeps each decision visible and makes the final verdict easier to audit.',
+    q: 'Does the platform support multiple team members?',
+    a: 'Yes, multi-seat collaboration with role-based access control (RBAC) is supported, allowing your team to collaborate seamlessly while maintaining security controls.',
   },
   {
-    q: 'Are the examples on this page live fact-checks?',
-    a: 'No. The investigation shown here is a curated product demonstration. Live verification requires the HalluciGuard retrieval and model services to be connected.',
+    q: 'What integrations are included?',
+    a: 'Out of the box, we support integrations with accounting software, major data warehouses, storage providers, and standard REST APIs.',
   },
   {
-    q: 'Does correction end the process?',
-    a: 'No. A corrected answer returns to claim extraction and verification. The loop ends only when the revised claims and their evidence can be traced.',
+    q: 'Do you offer onboarding support?',
+    a: 'Yes, all plans include dedicated onboarding documentation and technical support, with custom onboarding assistance available for enterprise accounts.',
   },
 ]
 
@@ -413,23 +413,35 @@ function RelationshipLab() {
 }
 
 function FAQ() {
-  const [open, setOpen] = useState(0)
+  const [open, setOpen] = useState(-1)
+  const videoSrc = `${import.meta.env.BASE_URL}help-support.mp4`
+
   return (
     <section className="faq-section" id="questions">
-      <div className="section-shell faq-grid">
-        <div className="faq-aside" data-reveal>
-          <span className="section-index">07 / HELP & SUPPORT</span>
-          <h2>Questions should<br /><em>open the evidence.</em></h2>
-          <p>Clear answers about what the system does, what it does not do, and why the trail matters.</p>
-          <a className="button dark" href="#contact">Ask another question <ArrowRight size={16} /></a>
+      <div className="section-shell faq-grid-v2">
+        <div className="faq-left" data-reveal>
+          <h2>Help and <span className="support-underline">support</span></h2>
+          <p className="faq-subtitle">Answers to common questions about setup, pricing, and how everything works.</p>
+          <div className="faq-video-container">
+            <video src={videoSrc} autoPlay loop muted playsInline className="faq-video-element" />
+          </div>
+          <p className="still-questions-label">Still got questions?</p>
+          <a className="button dark faq-contact-button" href="#contact">Contact us <ArrowRight size={15} /></a>
         </div>
-        <div className="faq-list" data-reveal>
+        <div className="faq-right-card" data-reveal>
           {faqs.map((item, index) => (
-            <article className={open === index ? 'open' : ''} key={item.q}>
-              <button onClick={() => setOpen(open === index ? -1 : index)} aria-expanded={open === index}>
-                <span>{item.q}</span><ChevronDown size={18} />
+            <article className={`faq-item-card ${open === index ? 'open' : ''}`} key={item.q}>
+              <button
+                className="faq-question-btn"
+                onClick={() => setOpen(open === index ? -1 : index)}
+                aria-expanded={open === index}
+              >
+                <span>{item.q}</span>
+                <span className="plus-badge">{open === index ? '−' : '+'}</span>
               </button>
-              <div className="faq-answer"><p>{item.a}</p></div>
+              <div className="faq-answer-collapse">
+                <p>{item.a}</p>
+              </div>
             </article>
           ))}
         </div>
