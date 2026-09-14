@@ -119,22 +119,22 @@ function BrandMark() {
 function Navbar() {
   const [open, setOpen] = useState(false)
   const links = [
-    ['How it works', '#pipeline'],
-    ['Agents', '#agents'],
-    ['Evidence', '#evidence'],
-    ['Questions', '#questions'],
+    ['The investigation', '#pipeline'],
+    ['The agents', '#agents'],
+    ['The evidence', '#evidence'],
   ]
   return (
     <header className="nav-wrap">
       <nav className="nav" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="HalluciGuard home">
-          <BrandMark />
-          <span>HalluciGuard</span>
+          <span>HalluciGuard</span><i className="brand-dot" aria-hidden="true" />
         </a>
         <div className="desktop-links">
-          {links.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
+          {links.map(([label, href], index) => (
+            <a className={index === 0 ? 'active' : ''} key={href} href={href}>{label}</a>
+          ))}
         </div>
-        <a className="nav-cta" href="#contact">Begin investigation <ArrowUpRight size={15} /></a>
+        <a className="nav-cta" href="#contact">Explore the project <ArrowUpRight size={14} /></a>
         <button className="menu-button" type="button" aria-label="Toggle navigation" aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -142,7 +142,7 @@ function Navbar() {
       {open && (
         <div className="mobile-menu">
           {links.map(([label, href]) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}</a>)}
-          <a href="#contact" onClick={() => setOpen(false)}>Begin investigation</a>
+          <a href="#contact" onClick={() => setOpen(false)}>Explore the project</a>
         </div>
       )}
     </header>
@@ -151,34 +151,25 @@ function Navbar() {
 
 function InvestigationVisual() {
   return (
-    <div className="investigation-visual" aria-label="Example claim investigation">
-      <div className="visual-toolbar">
-        <span><i /> LIVE INVESTIGATION</span>
-        <span>CASE 01 / 03</span>
+    <div className="original-visual" aria-label="Example claim investigation">
+      <div className="evidence-rings" aria-hidden="true">
+        <i className="ring ring-one" /><i className="ring ring-two" /><i className="ring ring-three" />
+        <span className="ring-ticks" />
       </div>
-      <div className="answer-strip">
-        <span className="strip-label">ANSWER</span>
-        <p>Apollo 11 landed on the Moon in 1969. <mark>Buzz Aldrin was the first person to step onto the lunar surface.</mark></p>
-      </div>
-      <div className="claim-row active">
-        <span>C—01</span>
-        <p>The landing was in 1969.</p>
-        <span className="state supported">SUPPORTED</span>
-      </div>
-      <div className="claim-row">
-        <span>C—02</span>
-        <p>Buzz Aldrin stepped out first.</p>
-        <span className="state checking">TRACING</span>
-      </div>
-      <div className="evidence-thread">
-        <div className="thread-line"><i /></div>
-        <div className="source-chip">
-          <FileText size={15} />
-          <span><b>NASA mission record</b><small>Primary source · Apollo 11</small></span>
+      <div className="investigation-visual">
+        <div className="visual-toolbar">
+          <span><ScanSearch size={16} /> INVESTIGATION 001</span>
+          <span className="pause-mark">Ⅱ</span>
         </div>
-        <div className="relationship-chip"><AlertTriangle size={14} /> CONTRADICTS C—02</div>
+        <div className="answer-strip">
+          <span className="strip-label">AN AI ANSWER, UNDER EXAMINATION</span>
+          <p>“Apollo 11 landed in <u>1969</u>.<br /><mark>Buzz Aldrin stepped out first.</mark>”</p>
+        </div>
+        <div className="investigation-progress"><i /><span>03 / 04</span></div>
+        <p className="comparison-note">Comparing independent evidence</p>
+        <p className="trace-route">Answer → Claims → Evidence → Verdict</p>
       </div>
-      <p className="demo-note">Curated demonstration — not a live fact-check.</p>
+      <p className="demo-note">Animated demonstration · not a live fact-check</p>
     </div>
   )
 }
@@ -186,22 +177,17 @@ function InvestigationVisual() {
 function Hero() {
   return (
     <section className="hero" id="top">
-      <div className="hero-rays" aria-hidden="true"><i /><i /><i /></div>
       <div className="hero-copy" data-reveal>
-        <div className="eyebrow"><span /> EVIDENCE-GROUNDED VERIFICATION</div>
         <h1>Don’t trust<br />the answer.</h1>
         <p className="hero-script">Trace the evidence.</p>
-        <p className="hero-intro">Turn fluent AI responses into inspectable claims, evidence relationships, and defensible verdicts.</p>
+        <p className="hero-intro">An answer can sound right. Let’s find out if it is.<br />Follow every claim from first question to final verdict.</p>
         <div className="hero-actions">
-          <a className="button primary" href="#pipeline">Begin the investigation <ArrowRight size={17} /></a>
-          <a className="text-link" href="#agents">Meet the five agents <ArrowUpRight size={15} /></a>
+          <a className="button primary" href="#pipeline">Follow an investigation <ArrowRight size={17} /></a>
+          <a className="button secondary" href="#agents">Meet the agents <span className="play-mark" aria-hidden="true" /></a>
         </div>
       </div>
       <div className="hero-stage" data-reveal>
         <InvestigationVisual />
-      </div>
-      <div className="hero-foot">
-        <span>ANSWER</span><i /><span>CLAIMS</span><i /><span>EVIDENCE</span><i /><span>VERDICT</span>
       </div>
     </section>
   )
