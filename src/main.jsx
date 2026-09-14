@@ -238,7 +238,7 @@ function EvidenceFormats() {
         <div className="aurora" aria-hidden="true" />
         <div className="format-track track-one">
           {[...formats, ...formats].map((item, index) => (
-            <article className={`format-card ${item.tone}`} key={`a-${index}`}>
+            <article className={`format-card ${item.tone}`} key={`a-${index}`} tabIndex={0}>
               <span>{item.code}</span>
               <h3>{item.title}</h3>
               <FileText size={25} />
@@ -247,7 +247,7 @@ function EvidenceFormats() {
         </div>
         <div className="format-track track-two">
           {[...formats.slice().reverse(), ...formats.slice().reverse()].map((item, index) => (
-            <article className={`format-card ${item.tone}`} key={`b-${index}`}>
+            <article className={`format-card ${item.tone}`} key={`b-${index}`} tabIndex={0}>
               <span>{item.code}</span>
               <h3>{item.title}</h3>
               <GitBranch size={24} />
