@@ -375,13 +375,13 @@ function EvidenceFormats() {
   return (
     <section className="formats-section-v2" id="evidence">
       <div className="section-shell">
-        <div className="format-normal-head" data-reveal>
+        <div className="format-normal-head">
           <div><span className="section-index">03 / THE SOURCE DESK</span><p className="mini-label">ANY EVIDENCE SHAPE</p></div>
-          <SplitReveal as="h2">Research that moves with the claim.</SplitReveal>
+          <h2>Research that moves with the claim.</h2>
           <p>Every output is a readable working record: what was claimed, which passage was found, and what the evidence establishes.</p>
         </div>
         <div className="format-normal-grid">
-          {formats.map((item, index) => <article className={`format-story-card ${item.tone}`} key={item.code} data-reveal><div className="format-card-head"><span>{item.code}</span><span>0{index + 1} / 06</span></div><FileText size={28} /><h3>{item.title}</h3><p>{item.copy}</p><div className="format-line"><i /><ArrowUpRight size={17} /></div></article>)}
+          {formats.map((item, index) => <article className={`format-story-card ${item.tone}`} key={item.code}><div className="format-card-head"><span>{item.code}</span><span>0{index + 1} / 06</span></div><FileText size={28} /><h3>{item.title}</h3><p>{item.copy}</p><div className="format-line"><i /><ArrowUpRight size={17} /></div></article>)}
         </div>
       </div>
     </section>
@@ -389,13 +389,8 @@ function EvidenceFormats() {
 }
 
 function Capabilities() {
-  const ref = useRef(null)
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => gsap.fromTo('.capability-card-v2', { opacity: 0, y: 44, rotateX: -10 }, { opacity: 1, y: 0, rotateX: 0, duration: .75, stagger: .065, ease: 'power3.out', scrollTrigger: { trigger: ref.current, start: 'top 72%', once: true } }), ref)
-    return () => ctx.revert()
-  }, [])
   return (
-    <section className="capabilities-section-v2" ref={ref}><div className="section-shell"><span className="section-index">04 / CAPABILITY FIELD</span><div className="capability-head-v2"><SplitReveal as="h2">Everything the agents can do.</SplitReveal><p>A calm field of capabilities—revealed once, then left still enough to inspect.</p></div><div className="capability-grid-v2">{capabilities.map(([title, Icon, tone, copy], index) => <article className={`capability-card-v2 ${tone}`} key={title}><span className="cap-card-number">{String(index + 1).padStart(2, '0')}</span><div className="capability-icon-v2"><Icon size={22} /></div><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+    <section className="capabilities-section-v2"><div className="section-shell"><span className="section-index">04 / CAPABILITY FIELD</span><div className="capability-head-v2"><h2>Everything the agents can do.</h2><p>A calm field of capabilities, left still and clear enough to inspect.</p></div><div className="capability-grid-v2">{capabilities.map(([title, Icon, tone, copy], index) => <article className={`capability-card-v2 ${tone}`} key={title}><span className="cap-card-number">{String(index + 1).padStart(2, '0')}</span><div className="capability-icon-v2"><Icon size={22} /></div><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
   )
 }
 
