@@ -382,8 +382,8 @@ function EvidenceFormats() {
             <div>
               <span className="section-index">03 / THE SOURCE DESK</span>
               <p className="mini-label"><i /> ANY EVIDENCE SHAPE</p>
-              <h2>Research that moves with the claim.</h2>
-              <p>Every output stays readable: what was claimed, which passage was found, and what the evidence establishes.</p>
+              <h2>Research</h2>
+              <p>Evidence that moves with the claim. Every output stays readable: what was claimed, which passage was found, and what the evidence establishes.</p>
             </div>
             <a className="research-cta" href="#relationships">Explore the records <ArrowUpRight size={17} /></a>
           </div>
