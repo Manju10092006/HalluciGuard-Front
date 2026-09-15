@@ -1872,19 +1872,17 @@ html.lenis, html.lenis body { height: auto; }
 .agent-route i.passed { background: #3c8a72; }
 @keyframes agentCoreIn { from { opacity: 0; transform: translateY(18px) scale(.985); } }
 
-.formats-section-v2 { position: relative; height: 100svh; overflow: hidden; background: #f4f3ef; color: #173d34; }
-.format-scroll-track { width: max-content; height: 100%; padding: 34px; display: flex; gap: 18px; align-items: stretch; will-change: transform; }
-.format-intro-card { width: min(690px, calc(100vw - 68px)); height: 100%; padding: clamp(38px,5vw,76px); display: flex; flex-direction: column; justify-content: center; border: 1px solid #cfdbd5; border-radius: 34px; background: #e5eee9; }
-.format-intro-card .section-index, .format-intro-card .mini-label { color: #60766e; }
-.format-intro-card .mini-label { margin: 54px 0 16px; font-size: 10px; letter-spacing: .17em; }
-.format-intro-card h2 { max-width: 580px; font-size: clamp(58px,6vw,100px); }
-.format-intro-card > p:not(.mini-label) { max-width: 520px; margin: 30px 0 0; color: #5f706a; font-size: 17px; line-height: 1.65; }
-.scroll-instruction { margin-top: auto; display: inline-flex; align-items: center; gap: 9px; color: #526b62; font-size: 9px; letter-spacing: .16em; }
-.format-story-card { width: min(480px, calc(100vw - 68px)); height: 100%; padding: 38px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,.55); border-radius: 34px; color: #161a18; }
+.formats-section-v2 { position: relative; padding: 140px 0 150px; overflow: hidden; background: #f4f3ef; color: #173d34; }
+.format-normal-head { display: grid; grid-template-columns: 220px minmax(480px, 1fr) 330px; align-items: end; gap: 42px; margin-bottom: 64px; }
+.format-normal-head .mini-label { margin: 34px 0 4px; color: #60766e; font-size: 10px; letter-spacing: .17em; }
+.format-normal-head h2 { max-width: 720px; font-size: clamp(58px, 5.7vw, 90px); }
+.format-normal-head > p { margin: 0 0 7px; color: #5f706a; font-size: 16px; line-height: 1.65; }
+.format-normal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.format-story-card { width: auto; min-height: 340px; padding: 30px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,.65); border-radius: 28px; color: #161a18; box-shadow: 0 12px 35px rgba(35,45,41,.04); }
 .format-story-card.peach { background: #f4c5b8; }.format-story-card.lilac { background: #d7cef3; }.format-story-card.sky { background: #c8dcf1; }.format-story-card.mint { background: #bcdccc; }.format-story-card.butter { background: #efdca4; }.format-story-card.rose { background: #ebc0cc; }
 .format-card-head { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .15em; }
-.format-story-card > svg { margin-top: auto; }
-.format-story-card h3 { margin: 24px 0 14px; font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(44px,4vw,65px); font-weight: 400; line-height: .95; letter-spacing: -.04em; }
+.format-story-card > svg { margin-top: 60px; }
+.format-story-card h3 { margin: auto 0 14px; padding-top: 30px; font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(38px, 3vw, 52px); font-weight: 400; line-height: .95; letter-spacing: -.04em; }
 .format-story-card p { max-width: 340px; color: rgba(22,26,24,.72); line-height: 1.55; }
 .format-line { margin-top: 24px; display: flex; align-items: center; gap: 12px; }.format-line i { flex: 1; height: 1px; background: rgba(22,26,24,.24); }
 
@@ -1892,14 +1890,13 @@ html.lenis, html.lenis body { height: auto; }
 .capability-head-v2 { margin: 28px 0 64px; display: grid; grid-template-columns: minmax(500px,850px) 330px; align-items: end; gap: 50px; }
 .capability-head-v2 h2 { font-size: clamp(58px,6vw,98px); }
 .capability-head-v2 p { margin: 0 0 8px; color: #6d7470; line-height: 1.6; }
-.capability-grid-v2 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; perspective: 900px; }
-.capability-card-v2 { position: relative; min-height: 220px; padding: 24px; overflow: hidden; border: 1px solid #e6e7e4; border-radius: 22px; background: #f5f5f3; }
-.capability-card-v2:nth-child(2), .capability-card-v2:nth-child(7), .capability-card-v2:nth-child(10) { grid-column: span 2; }
+.capability-grid-v2 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; perspective: 900px; }
+.capability-card-v2 { position: relative; min-height: 240px; padding: 28px; overflow: hidden; border: 1px solid #e2e4e1; border-radius: 24px; background: #f5f5f3; }
 .cap-card-number { position: absolute; top: 19px; right: 20px; color: #969b98; font-size: 9px; letter-spacing: .14em; }
 .capability-icon-v2 { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 15px; color: #fff; }
 .capability-card-v2.coral .capability-icon-v2 { background: #df826f; }.capability-card-v2.blue .capability-icon-v2 { background: #668bc8; }.capability-card-v2.violet .capability-icon-v2 { background: #8170bb; }.capability-card-v2.amber .capability-icon-v2 { background: #c99b3f; }.capability-card-v2.mint .capability-icon-v2 { background: #429879; }
-.capability-card-v2 h3 { margin: 35px 0 8px; font-size: 18px; letter-spacing: -.025em; }
-.capability-card-v2 p { max-width: 280px; margin: 0; color: #737976; font-size: 13px; line-height: 1.55; }
+.capability-card-v2 h3 { margin: 42px 0 10px; font-size: 20px; letter-spacing: -.025em; }
+.capability-card-v2 p { max-width: 330px; margin: 0; color: #737976; font-size: 14px; line-height: 1.55; }
 
 .constellation-section { padding: 145px 0; background: #f7f4ee; }
 .constellation-shell { display: grid; grid-template-columns: minmax(340px,.75fr) minmax(600px,1.25fr); align-items: center; gap: 70px; }
@@ -1926,6 +1923,7 @@ html.lenis, html.lenis body { height: auto; }
   .sequence-heading, .agent-section-head { grid-template-columns: 1fr 2fr; }.sequence-heading > p, .agent-section-head > p { display: none; }
   .sequence-layout { grid-template-columns: 130px 1fr; }.sequence-copy { display: none; }
   .agent-stage { grid-template-columns: .8fr 1.2fr; gap: 30px; }
+  .format-normal-head { grid-template-columns: 180px 1fr; }.format-normal-head > p { grid-column: 2; max-width: 560px; }
   .capability-grid-v2 { grid-template-columns: repeat(3,1fr); }.capability-card-v2:nth-child(7) { grid-column: span 1; }
   .constellation-shell { grid-template-columns: 1fr; }.constellation-copy { max-width: 900px; }.constellation-board { width: min(820px,100%); margin: 0 auto; }
 }
@@ -1935,7 +1933,7 @@ html.lenis, html.lenis body { height: auto; }
   .sequence-heading, .agent-section-head { display: block; }.sequence-heading h2, .agent-section-head h2 { margin-top: 24px; }
   .sequence-layout { margin-top: 42px; display: block; }.sequence-nav { margin-bottom: 18px; flex-direction: row; overflow-x: auto; }.sequence-nav button { min-width: 130px; padding-right: 18px; }.sequence-nav button i { inset: auto 0 0; width: 100%; height: 1px; }.sequence-nav button i::after { transform: scaleX(0); transform-origin: left; }.sequence-nav button.active i::after { transform: scaleX(1); }.sequence-dossier { min-height: 460px; }.sequence-copy { display: flex; padding-left: 0; }
   .agent-stage { display: block; margin-top: 40px; }.agent-wheel { height: auto; padding: 4px 0; display: flex; overflow-x: auto; border: 0; }.agent-wheel::before, .agent-wheel::after, .agent-wheel-focus { display: none; }.agent-wheel button { position: static; min-width: max-content; width: auto; padding: 13px 18px; border: 1px solid rgba(50,42,66,.13); border-radius: 999px; font-size: 17px; opacity: 1 !important; transform: none !important; }.agent-wheel button.active { background: #1f4038; color: #fff; }.agent-core { min-height: 430px; margin-top: 18px; }.agent-core .fold-text { font-size: clamp(48px,12vw,78px); }
-  .formats-section-v2 { height: auto; padding: 24px; overflow: visible; }.format-scroll-track { width: 100%; height: auto; padding: 0; display: grid; }.format-intro-card, .format-story-card { width: 100%; min-height: 540px; }.scroll-instruction { display: none; }
+  .formats-section-v2 { height: auto; padding: 110px 0; overflow: visible; }.format-normal-head { display: block; }.format-normal-head h2 { margin: 26px 0; }.format-normal-head > p { max-width: 620px; }.format-normal-grid { grid-template-columns: repeat(2, 1fr); }.format-story-card { width: 100%; min-height: 340px; }
   .capability-head-v2 { display: block; }.capability-head-v2 p { margin-top: 24px; }.capability-grid-v2 { grid-template-columns: repeat(2,1fr); }.capability-card-v2:nth-child(2), .capability-card-v2:nth-child(10) { grid-column: span 1; }
   .constellation-section { padding: 110px 0; }.constellation-board { min-height: 760px; }.source-one { left: 4%; top: 4%; }.source-two { right: 4%; top: 25%; }.source-three { right: 4%; bottom: 4%; }.constellation-verdict { left: 4%; bottom: 25%; }.constellation-claim { width: 230px; }
 }
@@ -1945,7 +1943,7 @@ html.lenis, html.lenis body { height: auto; }
   .sequence-heading h2, .agent-section-head h2, .capability-head-v2 h2, .constellation-copy h2 { font-size: 48px; }
   .sequence-dossier { min-height: 500px; border-radius: 22px; }.dossier-scene { padding: 24px; }.claim-chip { display: block; }.claim-chip b { display: block; margin-bottom: 8px; }
   .agent-core { padding: 34px 24px; border-radius: 24px; }.agent-core-meta { inset: 22px 22px auto; }.agent-icon { margin-top: 34px; }
-  .formats-section-v2 { padding: 12px; }.format-intro-card, .format-story-card { min-height: 570px; padding: 30px; border-radius: 25px; }
+  .formats-section-v2 { padding: 90px 0; }.format-normal-grid { grid-template-columns: 1fr; }.format-story-card { min-height: 320px; padding: 26px; border-radius: 24px; }
   .capabilities-section-v2 { padding: 100px 0; }.capability-grid-v2 { grid-template-columns: 1fr; }.capability-card-v2 { min-height: 205px; }
   .constellation-shell { gap: 45px; }.constellation-board { min-height: 920px; border-radius: 24px; }.constellation-lines { display: none; }.source-node, .constellation-verdict { position: relative; inset: auto; width: calc(100% - 32px); margin: 16px; }.constellation-claim { position: relative; inset: auto; width: calc(100% - 32px); min-height: 180px; margin: 16px; border-radius: 90px; transform: none; }.source-node { min-height: 128px; }.constellation-verdict { min-height: 145px; }
 }
