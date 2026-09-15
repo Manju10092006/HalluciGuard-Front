@@ -341,15 +341,6 @@ h2 em {
 }
 .wheel-ticks-group {
   transform-origin: 500px 500px;
-  animation: wheelRotate 60s linear infinite;
-}
-@keyframes wheelRotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .investigation-card {
