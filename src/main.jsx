@@ -330,7 +330,7 @@ function InvestigationSequence() {
   return (
     <section className="sequence-section" id="investigation" ref={sectionRef}>
       <div className="sequence-pin">
-        <div className="sequence-heading"><span className="section-index">01 / THE INVESTIGATION</span><SplitReveal as="h2">A confident answer is only the beginning.</SplitReveal><p>Scroll to open the response and follow what survives.</p></div>
+        <div className="sequence-heading"><SplitReveal as="h2">A confident answer is only the beginning.</SplitReveal><p>Scroll to open the response and follow what survives.</p></div>
         <div className="sequence-layout">
           <div className="sequence-nav">{acts.map((act, index) => <button key={act[0]} className={active === index ? 'active' : ''} onClick={() => setActive(index)}><span>0{index + 1}</span><b>{act[0]}</b><i /></button>)}</div>
           <div className={`sequence-dossier stage-${active}`}>
@@ -361,7 +361,7 @@ function AgentSystem() {
   }, [])
   return (
     <section className="agents-section-v2" id="agents" ref={sectionRef}><div className="agent-pin">
-      <div className="agent-section-head"><span className="section-index">02 / ORCHESTRATION LAYER</span><SplitReveal as="h2">Five specialists. One continuous evidence trail.</SplitReveal><p>Each scroll step hands the same claim to a new kind of intelligence.</p></div>
+      <div className="agent-section-head"><SplitReveal as="h2">Five specialists. One continuous evidence trail.</SplitReveal><p>Each scroll step hands the same claim to a new kind of intelligence.</p></div>
       <div className="agent-stage">
         <div className="agent-wheel">{agents.map((agent, index) => { const distance = index - active; const depth = Math.abs(distance); return <button key={agent.name} className={distance === 0 ? 'active' : ''} style={{ transform: `translate(${-depth * depth * 18}px, calc(-50% + ${distance * 92}px)) rotate(${-distance * 2.8}deg) scale(${1 - depth * .08})`, opacity: Math.max(.12, 1 - depth * .22) }} onClick={() => setActive(index)}><span>{agent.number}</span>{agent.name}</button> })}<div className="agent-wheel-focus" /></div>
         <div className="agent-core" key={current.name}><div className="agent-core-meta"><span>{current.number} / 05</span><span>ACTIVE SPECIALIST</span></div><div className="agent-icon"><ActiveIcon size={30} /></div><FoldText text={current.name} /><p>{current.action}</p><div className="agent-handoff"><span>OUTPUT</span><b>{current.output}</b><ArrowRight size={17} /></div></div>
@@ -380,7 +380,6 @@ function EvidenceFormats() {
         <div className="research-showcase">
           <div className="research-copy-panel">
             <div>
-              <span className="section-index">03 / THE SOURCE DESK</span>
               <p className="mini-label"><i /> ANY EVIDENCE SHAPE</p>
               <h2>Research</h2>
               <p>Evidence that moves with the claim. Every output stays readable: what was claimed, which passage was found, and what the evidence establishes.</p>
@@ -422,7 +421,6 @@ function Capabilities() {
   return (
     <section className="capabilities-section-v2">
       <div className="capability-title-wrap">
-        <span className="section-index">04 / CAPABILITY FIELD</span>
         <h2>Everything the agents can do.</h2>
         <p>Twelve coordinated capabilities, continuously moving through one evidence system.</p>
       </div>
@@ -460,7 +458,7 @@ function EvidenceConstellation() {
   }, [])
   return (
     <section className="constellation-section" id="relationships" ref={ref}><div className="section-shell constellation-shell">
-      <div className="constellation-copy" data-reveal><span className="section-index">05 / EVIDENCE RELATIONSHIPS</span><SplitReveal as="h2">A citation is a link. The relationship is the proof.</SplitReveal><p>HalluciGuard does not count links. It asks what each passage actually establishes, then keeps disagreement visible.</p><div className="relationship-key"><span><i className="support" />Support</span><span><i className="contradict" />Contradiction</span><span><i className="context" />Context only</span></div></div>
+      <div className="constellation-copy" data-reveal><SplitReveal as="h2">A citation is a link. The relationship is the proof.</SplitReveal><p>HalluciGuard does not count links. It asks what each passage actually establishes, then keeps disagreement visible.</p><div className="relationship-key"><span><i className="support" />Support</span><span><i className="contradict" />Contradiction</span><span><i className="context" />Context only</span></div></div>
       <div className="constellation-board"><svg className="constellation-lines" viewBox="0 0 800 610" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M168 126 C276 158 286 248 392 298" /><path pathLength="1" d="M648 118 C548 170 522 234 407 297" /><path pathLength="1" d="M650 468 C540 420 518 360 408 316" /></svg><article className="source-node source-one"><span>S—01 / SUPPORT</span><b>NASA Mission Overview</b><p>Apollo 11 landed in July 1969.</p></article><article className="source-node source-two"><span>S—02 / CONTRADICTION</span><b>Primary mission record</b><p>Neil Armstrong stepped onto the surface first.</p></article><article className="source-node source-three"><span>S—03 / CONTEXT</span><b>Lunar module record</b><p>Buzz Aldrin followed Armstrong onto the Moon.</p></article><div className="constellation-claim"><span>CLAIM C—02</span><blockquote>“Buzz Aldrin stepped out first.”</blockquote></div><div className="constellation-verdict"><span>VERDICT</span><b>Contradicted</b><p>Correct the person. Preserve the mission and date.</p></div></div>
     </div></section>
   )
