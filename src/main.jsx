@@ -233,9 +233,11 @@ function RotatingWheel() {
 function InvestigationVisual() {
   const root = useRef(null)
   useLayoutEffect(() => {
+    const hero = root.current?.closest('.hero')
+    if (!hero) return undefined
     const ctx = gsap.context(() => {
-      gsap.to('.rotating-wheel-svg', { rotate: 38, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.3 } })
-      gsap.to('.investigation-card', { yPercent: -8, rotate: -1.2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.1 } })
+      gsap.to('.rotating-wheel-svg', { rotate: 38, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1.3 } })
+      gsap.to('.investigation-card', { yPercent: -8, rotate: -1.2, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1.1 } })
     }, root)
     return () => ctx.revert()
   }, [])
