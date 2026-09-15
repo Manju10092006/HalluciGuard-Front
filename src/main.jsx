@@ -372,22 +372,19 @@ function AgentSystem() {
 }
 
 function EvidenceFormats() {
-  const sectionRef = useRef(null)
-  const trackRef = useRef(null)
-  useLayoutEffect(() => {
-    const mm = gsap.matchMedia()
-    mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
-      const track = trackRef.current
-      const distance = () => Math.max(0, track.scrollWidth - window.innerWidth + 64)
-      gsap.to(track, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: () => `+=${distance() + window.innerHeight}`, scrub: 1, pin: true, invalidateOnRefresh: true, anticipatePin: 1 } })
-    })
-    return () => mm.revert()
-  }, [])
   return (
-    <section className="formats-section-v2" id="evidence" ref={sectionRef}><div className="format-scroll-track" ref={trackRef}>
-      <article className="format-intro-card"><span className="section-index">03 / THE SOURCE DESK</span><p className="mini-label">ANY EVIDENCE SHAPE</p><SplitReveal as="h2">Research that moves with the claim.</SplitReveal><p>Vertical scroll becomes one deliberate passage across the working records. Nothing moves without you.</p><span className="scroll-instruction">SCROLL TO CROSS THE DESK <ArrowRight size={15} /></span></article>
-      {formats.map((item, index) => <article className={`format-story-card ${item.tone}`} key={item.code}><div className="format-card-head"><span>{item.code}</span><span>0{index + 1} / 06</span></div><FileText size={32} /><h3>{item.title}</h3><p>{item.copy}</p><div className="format-line"><i /><ArrowUpRight size={17} /></div></article>)}
-    </div></section>
+    <section className="formats-section-v2" id="evidence">
+      <div className="section-shell">
+        <div className="format-normal-head" data-reveal>
+          <div><span className="section-index">03 / THE SOURCE DESK</span><p className="mini-label">ANY EVIDENCE SHAPE</p></div>
+          <SplitReveal as="h2">Research that moves with the claim.</SplitReveal>
+          <p>Every output is a readable working record: what was claimed, which passage was found, and what the evidence establishes.</p>
+        </div>
+        <div className="format-normal-grid">
+          {formats.map((item, index) => <article className={`format-story-card ${item.tone}`} key={item.code} data-reveal><div className="format-card-head"><span>{item.code}</span><span>0{index + 1} / 06</span></div><FileText size={28} /><h3>{item.title}</h3><p>{item.copy}</p><div className="format-line"><i /><ArrowUpRight size={17} /></div></article>)}
+        </div>
+      </div>
+    </section>
   )
 }
 
