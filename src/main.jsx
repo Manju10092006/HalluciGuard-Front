@@ -156,34 +156,35 @@ function Navbar() {
 }
 
 function RotatingWheel() {
-  const ticks = Array.from({ length: 90 }, (_, i) => i)
+  const ticks = Array.from({ length: 120 }, (_, i) => i)
   return (
     <div className="wheel-container" aria-hidden="true">
-      <svg viewBox="0 0 800 800" className="rotating-wheel-svg">
+      <svg viewBox="0 0 1000 1000" className="rotating-wheel-svg">
         <defs>
-          <radialGradient id="wheelBgGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.75)" />
-            <stop offset="60%" stopColor="rgba(215, 235, 226, 0.4)" />
-            <stop offset="100%" stopColor="rgba(190, 218, 205, 0.05)" />
+          <radialGradient id="wheelGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0)" />
+            <stop offset="50%" stopColor="rgba(215, 238, 228, 0.45)" />
+            <stop offset="85%" stopColor="rgba(195, 226, 212, 0.25)" />
+            <stop offset="100%" stopColor="rgba(180, 218, 202, 0)" />
           </radialGradient>
         </defs>
-        <circle cx="400" cy="400" r="370" fill="url(#wheelBgGrad)" />
-        <circle cx="400" cy="400" r="370" stroke="rgba(35, 88, 73, 0.15)" strokeWidth="1.5" fill="none" />
-        <circle cx="400" cy="400" r="330" stroke="rgba(35, 88, 73, 0.12)" strokeWidth="1" strokeDasharray="3 3" fill="none" />
-        <circle cx="400" cy="400" r="290" stroke="rgba(35, 88, 73, 0.08)" strokeWidth="1" fill="none" />
-        <circle cx="400" cy="400" r="250" stroke="rgba(35, 88, 73, 0.06)" strokeWidth="1" strokeDasharray="2 4" fill="none" />
+        <circle cx="500" cy="500" r="460" fill="url(#wheelGrad)" />
+        <circle cx="500" cy="500" r="475" stroke="rgba(41, 109, 91, 0.14)" strokeWidth="1.5" fill="none" />
+        <circle cx="500" cy="500" r="435" stroke="rgba(41, 109, 91, 0.16)" strokeWidth="1.5" fill="none" />
+        <circle cx="500" cy="500" r="395" stroke="rgba(41, 109, 91, 0.1)" strokeWidth="1" strokeDasharray="4 4" fill="none" />
+        <circle cx="500" cy="500" r="350" stroke="rgba(41, 109, 91, 0.08)" strokeWidth="1" fill="none" />
         <g className="wheel-ticks-group">
           {ticks.map((i) => {
-            const angle = (i * 360) / 90
+            const angle = (i * 360) / 120
             const isMajor = i % 5 === 0
-            const tickLen = isMajor ? 18 : 10
-            const r1 = 370
-            const r2 = 370 - tickLen
+            const tickLen = isMajor ? 28 : 16
+            const r1 = 475
+            const r2 = 475 - tickLen
             const rad = (angle * Math.PI) / 180
-            const x1 = 400 + r1 * Math.cos(rad)
-            const y1 = 400 + r1 * Math.sin(rad)
-            const x2 = 400 + r2 * Math.cos(rad)
-            const y2 = 400 + r2 * Math.sin(rad)
+            const x1 = 500 + r1 * Math.cos(rad)
+            const y1 = 500 + r1 * Math.sin(rad)
+            const x2 = 500 + r2 * Math.cos(rad)
+            const y2 = 500 + r2 * Math.sin(rad)
             return (
               <line
                 key={i}
@@ -191,8 +192,8 @@ function RotatingWheel() {
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                stroke={isMajor ? "rgba(35, 88, 73, 0.38)" : "rgba(35, 88, 73, 0.18)"}
-                strokeWidth={isMajor ? 1.8 : 1}
+                stroke={isMajor ? "rgba(41, 109, 91, 0.35)" : "rgba(41, 109, 91, 0.18)"}
+                strokeWidth={isMajor ? 1.5 : 1}
               />
             )
           })}
@@ -209,19 +210,19 @@ function InvestigationVisual() {
       <div className="investigation-card" aria-label="Example claim investigation">
         <div className="visual-toolbar">
           <span className="toolbar-title"><ScanSearch size={15} /> INVESTIGATION 001</span>
-          <span className="pause-mark">Ⅱ</span>
+          <span className="pause-mark">00</span>
         </div>
         <div className="examination-section">
           <span className="strip-label">AN AI ANSWER, UNDER EXAMINATION</span>
           <p className="examination-quote">
-            “Apollo 11 landed in 1969.<br />
-            Buzz Aldrin stepped out first.”
+            “Apollo 11 landed in <u className="quote-underline">1969.</u><br />
+            <mark className="quote-highlight">Buzz Aldrin stepped out first.”</mark>
           </p>
         </div>
         <div className="card-divider" />
         <div className="status-row">
-          <span className="status-text">Reading the answer</span>
-          <span className="status-step">01 / 04</span>
+          <span className="status-text">Comparing independent evidence</span>
+          <span className="status-step">03 / 04</span>
         </div>
         <div className="trace-route">
           <span>Answer</span>
