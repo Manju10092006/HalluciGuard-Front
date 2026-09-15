@@ -372,16 +372,44 @@ function AgentSystem() {
 }
 
 function EvidenceFormats() {
+  const motionRows = [formats, [...formats.slice(3), ...formats.slice(0, 3)]]
+
   return (
     <section className="formats-section-v2" id="evidence">
       <div className="section-shell">
-        <div className="format-normal-head">
-          <div><span className="section-index">03 / THE SOURCE DESK</span><p className="mini-label">ANY EVIDENCE SHAPE</p></div>
-          <h2>Research that moves with the claim.</h2>
-          <p>Every output is a readable working record: what was claimed, which passage was found, and what the evidence establishes.</p>
-        </div>
-        <div className="format-normal-grid">
-          {formats.map((item, index) => <article className={`format-story-card ${item.tone}`} key={item.code}><div className="format-card-head"><span>{item.code}</span><span>0{index + 1} / 06</span></div><FileText size={28} /><h3>{item.title}</h3><p>{item.copy}</p><div className="format-line"><i /><ArrowUpRight size={17} /></div></article>)}
+        <div className="research-showcase">
+          <div className="research-copy-panel">
+            <div>
+              <span className="section-index">03 / THE SOURCE DESK</span>
+              <p className="mini-label"><i /> ANY EVIDENCE SHAPE</p>
+              <h2>Research that moves with the claim.</h2>
+              <p>Every output stays readable: what was claimed, which passage was found, and what the evidence establishes.</p>
+            </div>
+            <a className="research-cta" href="#relationships">Explore the records <ArrowUpRight size={17} /></a>
+          </div>
+          <div className="research-motion-window" aria-label="HalluciGuard evidence records">
+            <div className="research-glow research-glow-one" />
+            <div className="research-glow research-glow-two" />
+            {motionRows.map((row, rowIndex) => (
+              <div className={`research-marquee-row ${rowIndex === 1 ? 'reverse' : ''}`} key={`research-row-${rowIndex}`}>
+                <div className="research-marquee-track">
+                  {[0, 1].map((copyIndex) => (
+                    <div className="research-card-set" aria-hidden={copyIndex === 1} key={`research-set-${rowIndex}-${copyIndex}`}>
+                      {row.map((item, index) => (
+                        <article className={`research-record-card ${item.tone}`} key={`${item.code}-${copyIndex}-${index}`}>
+                          <div className="research-record-top"><span>{item.code}</span><FileText size={21} /></div>
+                          <h3>{item.title}</h3>
+                          <p>{item.copy}</p>
+                          <div className="research-record-foot"><span>{String(index + 1).padStart(2, '0')} / 06</span><ArrowUpRight size={16} /></div>
+                        </article>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div className="research-window-caption"><span>LIVE EVIDENCE DESK</span><span>CLAIM → SOURCE → VERDICT</span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -389,8 +417,35 @@ function EvidenceFormats() {
 }
 
 function Capabilities() {
+  const capabilityRows = Array.from({ length: 4 }, (_, index) => capabilities.slice(index * 3, index * 3 + 3))
+
   return (
-    <section className="capabilities-section-v2"><div className="section-shell"><span className="section-index">04 / CAPABILITY FIELD</span><div className="capability-head-v2"><h2>Everything the agents can do.</h2><p>A calm field of capabilities, left still and clear enough to inspect.</p></div><div className="capability-grid-v2">{capabilities.map(([title, Icon, tone, copy], index) => <article className={`capability-card-v2 ${tone}`} key={title}><span className="cap-card-number">{String(index + 1).padStart(2, '0')}</span><div className="capability-icon-v2"><Icon size={22} /></div><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+    <section className="capabilities-section-v2">
+      <div className="capability-title-wrap">
+        <span className="section-index">04 / CAPABILITY FIELD</span>
+        <h2>Everything the agents can do.</h2>
+        <p>Twelve coordinated capabilities, continuously moving through one evidence system.</p>
+      </div>
+      <div className="capability-flow" aria-label="HalluciGuard capabilities">
+        {capabilityRows.map((row, rowIndex) => (
+          <div className={`capability-marquee-row row-${rowIndex + 1} ${rowIndex % 2 ? 'reverse' : ''}`} key={`capability-row-${rowIndex}`}>
+            <div className="capability-marquee-track">
+              {[0, 1, 2].map((copyIndex) => (
+                <div className="capability-pill-set" aria-hidden={copyIndex > 0} key={`capability-set-${rowIndex}-${copyIndex}`}>
+                  {row.map(([title, Icon, tone, copy], index) => (
+                    <article className={`capability-pill ${tone}`} key={`${title}-${copyIndex}`}>
+                      <div className="capability-icon-v2"><Icon size={22} /></div>
+                      <div><h3>{title}</h3><p>{copy}</p></div>
+                      <span>{String(rowIndex * 3 + index + 1).padStart(2, '0')}</span>
+                    </article>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -404,7 +459,7 @@ function EvidenceConstellation() {
     return () => ctx.revert()
   }, [])
   return (
-    <section className="constellation-section" ref={ref}><div className="section-shell constellation-shell">
+    <section className="constellation-section" id="relationships" ref={ref}><div className="section-shell constellation-shell">
       <div className="constellation-copy" data-reveal><span className="section-index">05 / EVIDENCE RELATIONSHIPS</span><SplitReveal as="h2">A citation is a link. The relationship is the proof.</SplitReveal><p>HalluciGuard does not count links. It asks what each passage actually establishes, then keeps disagreement visible.</p><div className="relationship-key"><span><i className="support" />Support</span><span><i className="contradict" />Contradiction</span><span><i className="context" />Context only</span></div></div>
       <div className="constellation-board"><svg className="constellation-lines" viewBox="0 0 800 610" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M168 126 C276 158 286 248 392 298" /><path pathLength="1" d="M648 118 C548 170 522 234 407 297" /><path pathLength="1" d="M650 468 C540 420 518 360 408 316" /></svg><article className="source-node source-one"><span>S—01 / SUPPORT</span><b>NASA Mission Overview</b><p>Apollo 11 landed in July 1969.</p></article><article className="source-node source-two"><span>S—02 / CONTRADICTION</span><b>Primary mission record</b><p>Neil Armstrong stepped onto the surface first.</p></article><article className="source-node source-three"><span>S—03 / CONTEXT</span><b>Lunar module record</b><p>Buzz Aldrin followed Armstrong onto the Moon.</p></article><div className="constellation-claim"><span>CLAIM C—02</span><blockquote>“Buzz Aldrin stepped out first.”</blockquote></div><div className="constellation-verdict"><span>VERDICT</span><b>Contradicted</b><p>Correct the person. Preserve the mission and date.</p></div></div>
     </div></section>
