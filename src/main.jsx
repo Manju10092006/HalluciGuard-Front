@@ -1,5 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import Lenis from 'lenis'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   AlertTriangle,
   ArrowRight,
@@ -18,7 +21,6 @@ import {
   Network,
   Phone,
   RefreshCw,
-  Route,
   Scale,
   ScanSearch,
   Send,
@@ -28,36 +30,38 @@ import {
 } from 'lucide-react'
 import './styles.css'
 
+gsap.registerPlugin(ScrollTrigger)
+
 const capabilities = [
-  ['Atomic claim extraction', ScanSearch, 'coral'],
-  ['Source retrieval', FileSearch, 'blue'],
-  ['Claim-source matching', Link2, 'violet'],
-  ['Contradiction detection', AlertTriangle, 'amber'],
-  ['Context preservation', FileText, 'mint'],
-  ['Evidence grading', Scale, 'blue'],
-  ['Multi-agent routing', Route, 'violet'],
-  ['Human escalation', CircleHelp, 'coral'],
-  ['Correction loop', RefreshCw, 'mint'],
-  ['Provenance trail', GitBranch, 'amber'],
-  ['Source quality checks', BookOpenCheck, 'blue'],
-  ['Auditable verdicts', ShieldCheck, 'violet'],
+  ['Atomic claim extraction', ScanSearch, 'coral', 'One answer becomes precise, testable statements.'],
+  ['Primary-source retrieval', FileSearch, 'blue', 'Evidence is found at passage level, not page level.'],
+  ['Claim-source matching', Link2, 'violet', 'Each citation is attached to the statement it addresses.'],
+  ['Contradiction detection', AlertTriangle, 'amber', 'Disagreement stays visible instead of being averaged away.'],
+  ['Context preservation', FileText, 'mint', 'Qualifiers survive every handoff between agents.'],
+  ['Evidence grading', Scale, 'blue', 'Authority, recency, and directness are weighed independently.'],
+  ['Multi-agent routing', Network, 'violet', 'The right specialist receives the claim at the right moment.'],
+  ['Human escalation', CircleHelp, 'coral', 'Ambiguous cases can stop and ask for judgment.'],
+  ['Correction loop', RefreshCw, 'mint', 'A repaired answer is verified again before release.'],
+  ['Provenance trail', GitBranch, 'amber', 'Every decision keeps a readable chain of custody.'],
+  ['Source quality checks', BookOpenCheck, 'blue', 'Primary records are distinguished from summaries.'],
+  ['Auditable verdicts', ShieldCheck, 'violet', 'The conclusion arrives with its reasoning attached.'],
 ]
 
 const formats = [
-  { title: 'Claim dossier', code: 'C—01', tone: 'white' },
-  { title: 'Evidence map', code: 'E—04', tone: 'glass' },
-  { title: 'Contradiction brief', code: 'R—02', tone: 'white' },
-  { title: 'Source lineage', code: 'S—11', tone: 'glass' },
-  { title: 'Uncertainty note', code: 'U—03', tone: 'white' },
-  { title: 'Correction record', code: 'V—05', tone: 'glass' },
+  { title: 'Claim dossier', code: 'C—01', copy: 'Atomic statements with the original wording preserved.', tone: 'peach' },
+  { title: 'Evidence map', code: 'E—04', copy: 'Passages connected directly to the claims they address.', tone: 'lilac' },
+  { title: 'Contradiction brief', code: 'R—02', copy: 'Disagreement isolated without discarding valid context.', tone: 'sky' },
+  { title: 'Source lineage', code: 'S—11', copy: 'A visible trail from primary record to final verdict.', tone: 'mint' },
+  { title: 'Uncertainty note', code: 'U—03', copy: 'What remains unresolved is stated with precision.', tone: 'butter' },
+  { title: 'Correction record', code: 'V—05', copy: 'The repair, the reason, and the re-verification together.', tone: 'rose' },
 ]
 
 const agents = [
-  { number: '01', name: 'Detector', action: 'Breaks an answer into independently checkable claims.', icon: ScanSearch },
-  { number: '02', name: 'Retriever', action: 'Finds primary and high-quality sources for each claim.', icon: FileSearch },
-  { number: '03', name: 'Characterizer', action: 'Maps support, contradiction, context, and uncertainty.', icon: Network },
-  { number: '04', name: 'Judge', action: 'Weighs the evidence without hiding disagreement.', icon: Scale },
-  { number: '05', name: 'Corrector', action: 'Repairs unsupported claims and sends them back through verification.', icon: RefreshCw },
+  { number: '01', name: 'Detector', action: 'Breaks the answer into independently checkable claims while preserving the original context.', output: 'Atomic claim dossier', icon: ScanSearch },
+  { number: '02', name: 'Verifier', action: 'Finds the strongest passages and tests whether they directly establish each claim.', output: 'Evidence packet', icon: ShieldCheck },
+  { number: '03', name: 'Judge', action: 'Weighs support, contradiction, source quality, and uncertainty without hiding disagreement.', output: 'Claim-level verdict', icon: Scale },
+  { number: '04', name: 'Corrector', action: 'Repairs unsupported language without changing the parts of the answer that survived scrutiny.', output: 'Corrected response', icon: RefreshCw },
+  { number: '05', name: 'Memory Agent', action: 'Carries the verified result and its provenance forward so the same mistake does not return.', output: 'Verified memory', icon: GitBranch },
 ]
 
 const faqs = [
@@ -87,25 +91,48 @@ const faqs = [
   },
 ]
 
-function useReveal() {
+function useSmoothScroll() {
   useEffect(() => {
-    const items = document.querySelectorAll('[data-reveal]')
-    if (!('IntersectionObserver' in window)) {
-      items.forEach((item) => item.classList.add('is-visible'))
-      return
-    }
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-          observer.unobserve(entry.target)
-        }
-      }),
-      { threshold: 0.14, rootMargin: '0px 0px -5% 0px' },
-    )
-    items.forEach((item) => observer.observe(item))
-    return () => observer.disconnect()
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    const lenis = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 0.92, syncTouch: false })
+    const update = (time) => lenis.raf(time * 1000)
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add(update)
+    gsap.ticker.lagSmoothing(0)
+    return () => { gsap.ticker.remove(update); lenis.destroy() }
   }, [])
+}
+
+function useReveal() {
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => gsap.utils.toArray('[data-reveal]').forEach((item) => {
+      gsap.fromTo(item, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.85, ease: 'power3.out', scrollTrigger: { trigger: item, start: 'top 88%', once: true, fastScrollEnd: true } })
+    }))
+    return () => ctx.revert()
+  }, [])
+}
+
+function SplitReveal({ children, className = '', as: Tag = 'span', by = 'word' }) {
+  const ref = useRef(null)
+  const parts = useMemo(() => by === 'char' ? Array.from(children) : children.split(/(\s+)/), [children, by])
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const ctx = gsap.context(() => gsap.fromTo(el.querySelectorAll('[data-split-piece]'), { opacity: 0, yPercent: 105, rotateX: -42 }, { opacity: 1, yPercent: 0, rotateX: 0, duration: 0.85, stagger: by === 'char' ? 0.018 : 0.05, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 86%', once: true } }), el)
+    return () => ctx.revert()
+  }, [children, by])
+  return <Tag ref={ref} className={`split-reveal ${className}`.trim()}>{parts.map((part, index) => /^\s+$/.test(part) ? part : <span className="split-mask" key={`${part}-${index}`}><span data-split-piece>{part}</span></span>)}</Tag>
+}
+
+function FoldText({ text, className = '' }) {
+  const ref = useRef(null)
+  useLayoutEffect(() => {
+    const pieces = ref.current?.querySelectorAll('i')
+    if (!pieces?.length) return undefined
+    const tween = gsap.fromTo(pieces, { opacity: 0, rotateX: -88, transformOrigin: '50% 0%' }, { opacity: 1, rotateX: 0, duration: 0.62, stagger: 0.025, ease: 'power3.out' })
+    return () => tween.kill()
+  }, [text])
+  return <span ref={ref} className={`fold-text ${className}`}>{Array.from(text).map((char, i) => <span key={i}><i>{char === ' ' ? '\u00a0' : char}</i></span>)}</span>
 }
 
 function BrandMark() {
@@ -121,7 +148,7 @@ function BrandMark() {
 function Navbar() {
   const [open, setOpen] = useState(false)
   const links = [
-    ['The investigation', '#pipeline'],
+    ['The investigation', '#investigation'],
     ['The agents', '#agents'],
     ['The evidence', '#evidence'],
   ]
@@ -204,8 +231,16 @@ function RotatingWheel() {
 }
 
 function InvestigationVisual() {
+  const root = useRef(null)
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.to('.rotating-wheel-svg', { rotate: 38, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.3 } })
+      gsap.to('.investigation-card', { yPercent: -8, rotate: -1.2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.1 } })
+    }, root)
+    return () => ctx.revert()
+  }, [])
   return (
-    <div className="hero-visual-wrapper">
+    <div className="hero-visual-wrapper" ref={root}>
       <RotatingWheel />
       <div className="investigation-card" aria-label="Example claim investigation">
         <div className="visual-toolbar">
@@ -242,18 +277,18 @@ function InvestigationVisual() {
 function Hero() {
   return (
     <section className="hero" id="top">
-      <div className="hero-copy" data-reveal>
+      <div className="hero-copy">
         <h1 className="hero-heading">
-          Don't trust<br />
-          the answer.<br />
-          <span className="hero-serif-italic">Trace the evidence.</span>
+          <SplitReveal>Don't trust</SplitReveal><br />
+          <SplitReveal>the answer.</SplitReveal><br />
+          <SplitReveal className="hero-serif-italic">Trace the evidence.</SplitReveal>
         </h1>
         <p className="hero-intro">
           An answer can sound right. Let’s find out if it is.<br />
           Follow every claim from first question to final verdict.
         </p>
         <div className="hero-actions">
-          <a className="button primary-green" href="#pipeline">
+          <a className="button primary-green" href="#investigation">
             Follow an Investigation <ArrowRight size={16} />
           </a>
           <a className="button light-pill" href="#agents">
@@ -261,7 +296,7 @@ function Hero() {
           </a>
         </div>
       </div>
-      <div className="hero-stage" data-reveal>
+      <div className="hero-stage">
         <InvestigationVisual />
       </div>
       <div className="hero-footer-left">
@@ -274,125 +309,36 @@ function Hero() {
   )
 }
 
-function StoryBridge() {
-  return (
-    <section className="story-bridge">
-      <div className="section-shell bridge-grid">
-        <span className="section-index" data-reveal>01 / THE INVESTIGATION</span>
-        <h2 data-reveal>Fluency is easy.<br /><em>Proof takes work.</em></h2>
-        <div className="bridge-copy" data-reveal>
-          <p>An answer can sound complete while hiding several factual claims. HalluciGuard slows the response down—just enough to make every decision inspectable.</p>
-          <div className="mini-route">
-            <span>Answer</span><ArrowRight size={16} /><span>Claims</span><ArrowRight size={16} /><span>Evidence</span><ArrowRight size={16} /><strong>Verdict</strong>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function EvidenceFormats() {
-  return (
-    <section className="formats-section" id="evidence">
-      <div className="formats-copy" data-reveal>
-        <span className="section-index inverse">02 / THE SOURCE DESK</span>
-        <p className="mini-label">ANY EVIDENCE SHAPE</p>
-        <h2>Research that<br /><em>moves with the claim.</em></h2>
-        <p>Each output is a working record: what was claimed, which passage was found, and what relationship the evidence establishes.</p>
-        <a className="button light" href="#pipeline">Follow a claim <ArrowRight size={16} /></a>
-      </div>
-      <div className="format-window" data-reveal>
-        <div className="aurora" aria-hidden="true" />
-        <div className="format-track track-one">
-          {[...formats, ...formats].map((item, index) => (
-            <article className={`format-card ${item.tone}`} key={`a-${index}`} tabIndex={0}>
-              <span>{item.code}</span>
-              <h3>{item.title}</h3>
-              <FileText size={25} />
-            </article>
-          ))}
-        </div>
-        <div className="format-track track-two">
-          {[...formats.slice().reverse(), ...formats.slice().reverse()].map((item, index) => (
-            <article className={`format-card ${item.tone}`} key={`b-${index}`} tabIndex={0}>
-              <span>{item.code}</span>
-              <h3>{item.title}</h3>
-              <GitBranch size={24} />
-            </article>
-          ))}
-        </div>
-        <p className="drag-note">Moving evidence records · pause on hover</p>
-      </div>
-    </section>
-  )
-}
-
-function CapabilityPill({ item }) {
-  const [title, Icon, tone] = item
-  return (
-    <div className="capability-pill">
-      <span className={`cap-icon ${tone}`}><Icon size={21} /></span>
-      <span><b>{title}</b><small>Visible at claim level</small></span>
-    </div>
-  )
-}
-
-function Capabilities() {
-  const rows = [
-    capabilities.slice(0, 5),
-    capabilities.slice(4, 9),
-    capabilities.slice(8).concat(capabilities.slice(0, 1)),
+function InvestigationSequence() {
+  const sectionRef = useRef(null)
+  const [active, setActive] = useState(0)
+  const acts = [
+    ['Answer', 'Start with the exact response.', 'The system preserves the original language before analysis begins.'],
+    ['Claims', 'Separate what can be checked.', 'One fluent paragraph becomes atomic statements with their context intact.'],
+    ['Evidence', 'Bring the record to the claim.', 'Relevant passages arrive with source quality and relationship clearly marked.'],
+    ['Verdict', 'Let the evidence have a say.', 'Supported facts survive. Contradictions are corrected. Uncertainty remains visible.'],
   ]
+  useLayoutEffect(() => {
+    const mm = gsap.matchMedia()
+    mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+      ScrollTrigger.create({ trigger: sectionRef.current, start: 'top top', end: '+=320%', pin: '.sequence-pin', anticipatePin: 1, onUpdate: (self) => setActive(Math.min(3, Math.floor(self.progress * 4))) })
+    })
+    return () => mm.revert()
+  }, [])
   return (
-    <section className="capabilities-section">
-      <div className="section-shell">
-        <span className="section-index" data-reveal>03 / CAPABILITY FIELD</span>
-        <div className="section-heading" data-reveal>
-          <h2>Everything the agents can do.</h2>
-          <p>No feature grid. One moving field of checks, handoffs, and traceable decisions.</p>
-        </div>
-      </div>
-      <div className="capability-field" data-reveal>
-        {rows.map((row, rowIndex) => (
-          <div className={`cap-row row-${rowIndex + 1}`} key={rowIndex}>
-            <div className="cap-track">
-              {[...row, ...row, ...row].map((item, index) => <CapabilityPill item={item} key={`${rowIndex}-${index}`} />)}
-            </div>
+    <section className="sequence-section" id="investigation" ref={sectionRef}>
+      <div className="sequence-pin">
+        <div className="sequence-heading"><span className="section-index">01 / THE INVESTIGATION</span><SplitReveal as="h2">A confident answer is only the beginning.</SplitReveal><p>Scroll to open the response and follow what survives.</p></div>
+        <div className="sequence-layout">
+          <div className="sequence-nav">{acts.map((act, index) => <button key={act[0]} className={active === index ? 'active' : ''} onClick={() => setActive(index)}><span>0{index + 1}</span><b>{act[0]}</b><i /></button>)}</div>
+          <div className={`sequence-dossier stage-${active}`}>
+            <div className="dossier-top"><span>HG / CASE 001</span><span>{String(active + 1).padStart(2, '0')} — 04</span></div>
+            <div className="dossier-scene answer-scene"><span>ORIGINAL RESPONSE</span><blockquote>“Apollo 11 landed in 1969. Buzz Aldrin was the first person to step onto the lunar surface.”</blockquote></div>
+            <div className="dossier-scene claims-scene"><span>CLAIM EXTRACTION</span><div className="claim-chip"><b>C—01</b>Apollo 11 landed in 1969.</div><div className="claim-chip flagged"><b>C—02</b>Buzz Aldrin stepped out first.</div></div>
+            <div className="dossier-scene evidence-scene"><span>PRIMARY RECORD / NASA</span><div className="evidence-paper"><FileText size={20} /><p>Neil Armstrong was the first person to step onto the Moon, followed by Buzz Aldrin.</p><small>DIRECT CONTRADICTION · PRIMARY SOURCE</small></div></div>
+            <div className="dossier-scene verdict-scene"><span>VERDICT ISSUED</span><div className="verdict-seal"><CheckCircle2 size={30} /><b>CORRECTED</b></div><p>Apollo 11 landed in 1969. <strong>Neil Armstrong</strong> was the first person to step onto the lunar surface.</p></div>
           </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function Pipeline() {
-  const steps = [
-    ['01', 'Extract', 'Turn the answer into precise, independently checkable claims.'],
-    ['02', 'Retrieve', 'Find the passage—not merely a page about the same topic.'],
-    ['03', 'Relate', 'Measure support, contradiction, context, and uncertainty.'],
-    ['04', 'Judge', 'Issue a claim-level verdict with the reasoning left visible.'],
-    ['05', 'Reverify', 'Correct weak claims and run the revised answer through again.'],
-  ]
-  return (
-    <section className="pipeline-section" id="pipeline">
-      <div className="section-shell">
-        <span className="section-index" data-reveal>04 / VERIFICATION PATH</span>
-        <div className="section-heading narrow" data-reveal>
-          <h2>The answer doesn’t move forward until the evidence does.</h2>
-          <p>Scroll through one continuous investigation—from language to a verdict that can be audited.</p>
-        </div>
-        <div className="pipeline" data-reveal>
-          <svg className="pipeline-path" viewBox="0 0 1240 330" preserveAspectRatio="none" aria-hidden="true">
-            <path className="path-ghost" d="M45 70 C170 5 240 10 310 115 S485 230 560 125 S750 8 820 120 S1015 275 1195 130" />
-            <path className="path-live" d="M45 70 C170 5 240 10 310 115 S485 230 560 125 S750 8 820 120 S1015 275 1195 130" />
-          </svg>
-          {steps.map(([number, title, copy], index) => (
-            <article className={`pipeline-step step-${index + 1}`} key={number}>
-              <span className="step-dot" />
-              <div><b>{number}</b><h3>{title}</h3></div>
-              <p>{copy}</p>
-            </article>
-          ))}
+          <div className="sequence-copy" key={acts[active][0]}><span>{acts[active][0]}</span><h3>{acts[active][1]}</h3><p>{acts[active][2]}</p><div className="sequence-progress"><i style={{ width: `${(active + 1) * 25}%` }} /></div></div>
         </div>
       </div>
     </section>
@@ -400,94 +346,74 @@ function Pipeline() {
 }
 
 function AgentSystem() {
+  const sectionRef = useRef(null)
   const [active, setActive] = useState(0)
-  const ActiveIcon = agents[active].icon
+  const current = agents[active]
+  const ActiveIcon = current.icon
+  useLayoutEffect(() => {
+    const mm = gsap.matchMedia()
+    mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+      ScrollTrigger.create({ trigger: sectionRef.current, start: 'top top', end: '+=400%', pin: '.agent-pin', anticipatePin: 1, onUpdate: (self) => setActive(Math.min(4, Math.floor(self.progress * 5))) })
+    })
+    return () => mm.revert()
+  }, [])
   return (
-    <section className="agents-section" id="agents">
-      <div className="section-shell agents-shell">
-        <div className="agents-intro" data-reveal>
-          <span className="section-index inverse">05 / ORCHESTRATION LAYER</span>
-          <h2>Five specialists.<br /><em>One evidence trail.</em></h2>
-          <p>The orchestration layer passes a claim forward with its context intact. Select an agent to inspect its responsibility.</p>
-          <div className="agent-tabs" role="tablist" aria-label="HalluciGuard agents">
-            {agents.map((agent, index) => (
-              <button
-                key={agent.name}
-                role="tab"
-                aria-selected={index === active}
-                className={index === active ? 'active' : ''}
-                onClick={() => setActive(index)}
-              >
-                <span>{agent.number}</span>{agent.name}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="agent-map" data-reveal>
-          <div className="agent-orbit" aria-hidden="true">
-            <i className="orbit one" /><i className="orbit two" /><i className="orbit three" />
-            {agents.map((agent, index) => {
-              const Icon = agent.icon
-              return <span key={agent.name} className={`orbit-node node-${index + 1} ${index === active ? 'active' : ''}`}><Icon size={18} /></span>
-            })}
-          </div>
-          <div className="agent-inspector">
-            <span className="agent-number">{agents[active].number} / 05</span>
-            <ActiveIcon size={30} />
-            <h3>{agents[active].name}</h3>
-            <p>{agents[active].action}</p>
-            <div className="agent-output">
-              <span>HANDOFF</span>
-              <b>{active === agents.length - 1 ? 'Return to Detector' : `Pass to ${agents[active + 1].name}`}</b>
-              <ArrowRight size={16} />
-            </div>
-          </div>
-        </div>
+    <section className="agents-section-v2" id="agents" ref={sectionRef}><div className="agent-pin">
+      <div className="agent-section-head"><span className="section-index">02 / ORCHESTRATION LAYER</span><SplitReveal as="h2">Five specialists. One continuous evidence trail.</SplitReveal><p>Each scroll step hands the same claim to a new kind of intelligence.</p></div>
+      <div className="agent-stage">
+        <div className="agent-wheel">{agents.map((agent, index) => { const distance = index - active; const depth = Math.abs(distance); return <button key={agent.name} className={distance === 0 ? 'active' : ''} style={{ transform: `translate(${-depth * depth * 18}px, calc(-50% + ${distance * 92}px)) rotate(${-distance * 2.8}deg) scale(${1 - depth * .08})`, opacity: Math.max(.12, 1 - depth * .22) }} onClick={() => setActive(index)}><span>{agent.number}</span>{agent.name}</button> })}<div className="agent-wheel-focus" /></div>
+        <div className="agent-core" key={current.name}><div className="agent-core-meta"><span>{current.number} / 05</span><span>ACTIVE SPECIALIST</span></div><div className="agent-icon"><ActiveIcon size={30} /></div><FoldText text={current.name} /><p>{current.action}</p><div className="agent-handoff"><span>OUTPUT</span><b>{current.output}</b><ArrowRight size={17} /></div></div>
+        <div className="agent-route" aria-hidden="true"><span>CLAIM</span>{agents.map((agent, index) => <i key={agent.name} className={index <= active ? 'passed' : ''} />)}<span>MEMORY</span></div>
       </div>
-    </section>
+    </div></section>
   )
 }
 
-function RelationshipLab() {
-  const [mode, setMode] = useState('Contradiction')
-  const relations = {
-    Support: { label: 'SUPPORTS THE CLAIM', detail: 'A primary mission record confirms the landing date.', status: 'Supported', color: 'support' },
-    Contradiction: { label: 'DISAGREES WITH THE CLAIM', detail: 'NASA identifies Neil Armstrong as the first person to step onto the Moon, followed by Buzz Aldrin.', status: 'Contradicted', color: 'contradict' },
-    Uncertainty: { label: 'DOES NOT RESOLVE THE CLAIM', detail: 'The available passage discusses the mission but does not establish who stepped out first.', status: 'Unverified', color: 'uncertain' },
-  }
-  const current = relations[mode]
+function EvidenceFormats() {
+  const sectionRef = useRef(null)
+  const trackRef = useRef(null)
+  useLayoutEffect(() => {
+    const mm = gsap.matchMedia()
+    mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+      const track = trackRef.current
+      const distance = () => Math.max(0, track.scrollWidth - window.innerWidth + 64)
+      gsap.to(track, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: sectionRef.current, start: 'top top', end: () => `+=${distance() + window.innerHeight}`, scrub: 1, pin: true, invalidateOnRefresh: true, anticipatePin: 1 } })
+    })
+    return () => mm.revert()
+  }, [])
   return (
-    <section className="relationship-section">
-      <div className="section-shell">
-        <span className="section-index inverse" data-reveal>06 / EVIDENCE RELATIONSHIPS</span>
-        <div className="relationship-head" data-reveal>
-          <h2>A citation is a link.<br /><em>The relationship matters.</em></h2>
-          <p>Topic relevance is only the beginning. Check what the source actually establishes.</p>
-        </div>
-        <div className="relation-tabs" data-reveal>
-          {Object.keys(relations).map((relation) => (
-            <button key={relation} className={mode === relation ? 'active' : ''} onClick={() => setMode(relation)}>{relation}</button>
-          ))}
-        </div>
-        <div className="relation-stage" data-reveal>
-          <div className="claim-panel">
-            <span>THE CLAIM</span>
-            <blockquote>“Buzz Aldrin stepped out first.”</blockquote>
-            <small>FROM THE ORIGINAL ANSWER</small>
-          </div>
-          <div className={`relation-arrow ${current.color}`}><i /><ArrowRight size={21} /><i /></div>
-          <div className="finding-panel">
-            <span>{current.label}</span>
-            <p>{current.detail}</p>
-            <a href="https://www.nasa.gov/history/apollo-11-mission-overview/" target="_blank" rel="noreferrer">NASA · Apollo 11 mission overview <ArrowUpRight size={13} /></a>
-          </div>
-        </div>
-        <div className="relation-verdict" data-reveal>
-          <strong className={current.color}>{current.status}</strong>
-          <span>{mode === 'Contradiction' ? 'Correct the person. The mission itself remains valid.' : mode === 'Support' ? 'Preserve the claim and attach the supporting passage.' : 'Keep the claim visibly unresolved.'}</span>
-        </div>
-      </div>
-    </section>
+    <section className="formats-section-v2" id="evidence" ref={sectionRef}><div className="format-scroll-track" ref={trackRef}>
+      <article className="format-intro-card"><span className="section-index">03 / THE SOURCE DESK</span><p className="mini-label">ANY EVIDENCE SHAPE</p><SplitReveal as="h2">Research that moves with the claim.</SplitReveal><p>Vertical scroll becomes one deliberate passage across the working records. Nothing moves without you.</p><span className="scroll-instruction">SCROLL TO CROSS THE DESK <ArrowRight size={15} /></span></article>
+      {formats.map((item, index) => <article className={`format-story-card ${item.tone}`} key={item.code}><div className="format-card-head"><span>{item.code}</span><span>0{index + 1} / 06</span></div><FileText size={32} /><h3>{item.title}</h3><p>{item.copy}</p><div className="format-line"><i /><ArrowUpRight size={17} /></div></article>)}
+    </div></section>
+  )
+}
+
+function Capabilities() {
+  const ref = useRef(null)
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => gsap.fromTo('.capability-card-v2', { opacity: 0, y: 44, rotateX: -10 }, { opacity: 1, y: 0, rotateX: 0, duration: .75, stagger: .065, ease: 'power3.out', scrollTrigger: { trigger: ref.current, start: 'top 72%', once: true } }), ref)
+    return () => ctx.revert()
+  }, [])
+  return (
+    <section className="capabilities-section-v2" ref={ref}><div className="section-shell"><span className="section-index">04 / CAPABILITY FIELD</span><div className="capability-head-v2"><SplitReveal as="h2">Everything the agents can do.</SplitReveal><p>A calm field of capabilities—revealed once, then left still enough to inspect.</p></div><div className="capability-grid-v2">{capabilities.map(([title, Icon, tone, copy], index) => <article className={`capability-card-v2 ${tone}`} key={title}><span className="cap-card-number">{String(index + 1).padStart(2, '0')}</span><div className="capability-icon-v2"><Icon size={22} /></div><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+  )
+}
+
+function EvidenceConstellation() {
+  const ref = useRef(null)
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top 68%', once: true } })
+      tl.from('.constellation-claim', { scale: .7, opacity: 0, duration: .7, ease: 'back.out(1.5)' }).from('.source-node', { opacity: 0, scale: .82, y: 24, stagger: .16, duration: .65, ease: 'power3.out' }, '-=.25').from('.constellation-lines path', { strokeDashoffset: 1, duration: .8, stagger: .1, ease: 'power2.inOut' }, '-=.45').from('.constellation-verdict', { opacity: 0, y: 20, duration: .65, ease: 'power3.out' }, '-=.2')
+    }, ref)
+    return () => ctx.revert()
+  }, [])
+  return (
+    <section className="constellation-section" ref={ref}><div className="section-shell constellation-shell">
+      <div className="constellation-copy" data-reveal><span className="section-index">05 / EVIDENCE RELATIONSHIPS</span><SplitReveal as="h2">A citation is a link. The relationship is the proof.</SplitReveal><p>HalluciGuard does not count links. It asks what each passage actually establishes, then keeps disagreement visible.</p><div className="relationship-key"><span><i className="support" />Support</span><span><i className="contradict" />Contradiction</span><span><i className="context" />Context only</span></div></div>
+      <div className="constellation-board"><svg className="constellation-lines" viewBox="0 0 800 610" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M168 126 C276 158 286 248 392 298" /><path pathLength="1" d="M648 118 C548 170 522 234 407 297" /><path pathLength="1" d="M650 468 C540 420 518 360 408 316" /></svg><article className="source-node source-one"><span>S—01 / SUPPORT</span><b>NASA Mission Overview</b><p>Apollo 11 landed in July 1969.</p></article><article className="source-node source-two"><span>S—02 / CONTRADICTION</span><b>Primary mission record</b><p>Neil Armstrong stepped onto the surface first.</p></article><article className="source-node source-three"><span>S—03 / CONTEXT</span><b>Lunar module record</b><p>Buzz Aldrin followed Armstrong onto the Moon.</p></article><div className="constellation-claim"><span>CLAIM C—02</span><blockquote>“Buzz Aldrin stepped out first.”</blockquote></div><div className="constellation-verdict"><span>VERDICT</span><b>Contradicted</b><p>Correct the person. Preserve the mission and date.</p></div></div>
+    </div></section>
   )
 }
 
@@ -498,16 +424,16 @@ function FAQ() {
   return (
     <section className="faq-section" id="questions">
       <div className="section-shell faq-grid-v2">
-        <div className="faq-left" data-reveal>
+        <div className="faq-left">
           <h2>Help and <span className="support-underline">support</span></h2>
           <p className="faq-subtitle">Answers to common questions about setup, pricing, and how everything works.</p>
           <div className="faq-video-container">
-            <video src={videoSrc} autoPlay loop muted playsInline className="faq-video-element" />
+            <video src={videoSrc} autoPlay loop muted playsInline preload="metadata" className="faq-video-element" />
           </div>
           <p className="still-questions-label">Still got questions?</p>
           <a className="button dark faq-contact-button" href="#contact">Contact us <ArrowRight size={15} /></a>
         </div>
-        <div className="faq-right-card" data-reveal>
+        <div className="faq-right-card">
           {faqs.map((item, index) => (
             <article className={`faq-item-card ${open === index ? 'open' : ''}`} key={item.q}>
               <button
@@ -559,7 +485,7 @@ function Contact() {
               <span>210 Market St. Suite 402<br />San Francisco, CA</span>
             </div>
             <div className="video-box">
-              <video src={videoSrc} autoPlay loop muted playsInline className="contact-video-media" />
+                  <video src={videoSrc} autoPlay loop muted playsInline preload="metadata" className="contact-video-media" />
             </div>
           </aside>
           <form className="contact-card-right" onSubmit={submit} data-reveal>
@@ -615,18 +541,18 @@ function Footer() {
 }
 
 function App() {
+  useSmoothScroll()
   useReveal()
   return (
     <>
       <Navbar />
       <main>
         <Hero />
-        <StoryBridge />
+        <InvestigationSequence />
+        <AgentSystem />
         <EvidenceFormats />
         <Capabilities />
-        <Pipeline />
-        <AgentSystem />
-        <RelationshipLab />
+        <EvidenceConstellation />
         <FAQ />
         <Contact />
       </main>
